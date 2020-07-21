@@ -18,9 +18,9 @@ from flask import (
     abort
 )
 
-# import process.init
-# from process.find_target import findTarget
-# from process.get_class import getClass
+import process.init
+from process.find_target import findTarget
+from process.get_class import getClass
 from process.set_target import featureCount
 from process.set_target import extractColor
 from process.set_colors import setColors
@@ -60,151 +60,151 @@ def New_Case():
     return jsonify({'name': name, 'caseID': str(caseID)}), 200
 
 # To select a bag inorder to Set a Target
-# @app.route('/findtarget', methods=['POST'])
-# def Find_Target():
-#     isID = 0
+@app.route('/findtarget', methods=['POST'])
+def Find_Target():
+    isID = 0
     
-#     try:
-#         ID = request.json['id']
-#         imgID = request.json['imgID']
-#         isID = ID
-#     except:
-#         image = request.files['image']
+    try:
+        ID = request.json['id']
+        imgID = request.json['imgID']
+        isID = ID
+    except:
+        image = request.files['image']
     
 
-#     if(isID > 0):
-#         temp_path = "/Project/static/temporary/{}.jpg".format(imgID)
-#         # 
-#     else:
-#         filename = image.filename
-#         cur_time = str(int(time.time()))
-#         temp_name = "{}-{}".format(cur_time, filename)
+    if(isID > 0):
+        temp_path = "/Project/static/temporary/{}.jpg".format(imgID)
+        # 
+    else:
+        filename = image.filename
+        cur_time = str(int(time.time()))
+        temp_name = "{}-{}".format(cur_time, filename)
 
-#         temp_path = "/Project/static/temporary/{}".format(temp_name)
-#         image.save("./static/temporary/{}".format(temp_name))
+        temp_path = "/Project/static/temporary/{}".format(temp_name)
+        image.save("./static/temporary/{}".format(temp_name))
 
-#     img, num, bags = findTarget(temp_path, isID)
+    img, num, bags = findTarget(temp_path, isID)
 
-#     os.remove(temp_path)
+    os.remove(temp_path)
 
-#     cur_time = str(int(time.time()))
-#     temp_name = cur_time + ".jpg"
+    cur_time = str(int(time.time()))
+    temp_name = cur_time + ".jpg"
 
-#     cv2.imwrite("/Project/static/temporary/" + str(temp_name), img)
-#     link = "http://localhost:5000/temporary/{}".format(temp_name)
+    cv2.imwrite("/Project/static/temporary/" + str(temp_name), img)
+    link = "http://localhost:5000/temporary/{}".format(temp_name)
 
-#     if(isID > 0):
-#         res = {
-#             "img_link": link,
-#             "bag_info": bags
-#         }
-#     else:    
-#         res = {
-#             "img_link": link,
-#             "bags_count": num,
-#             "bags_detected": bags
-#         }
+    if(isID > 0):
+        res = {
+            "img_link": link,
+            "bag_info": bags
+        }
+    else:    
+        res = {
+            "img_link": link,
+            "bags_count": num,
+            "bags_detected": bags
+        }
     
-#     return jsonify(res), 200
+    return jsonify(res), 200
 
 # Set Target Method
-# @app.route('/settarget', methods=['POST'])
-# def Set_Target():
-#     try:
-#         caseID = request.headers['caseID']
-#     except:
-#         return jsonify({"error": "'caseID' header file record is missing"})  
+@app.route('/settarget', methods=['POST'])
+def Set_Target():
+    try:
+        caseID = request.headers['caseID']
+    except:
+        return jsonify({"error": "'caseID' header file record is missing"})  
 
-#     if(not ObjectId.is_valid(caseID)):
-#         return jsonify({"error": "invalid case ID"})
+    if(not ObjectId.is_valid(caseID)):
+        return jsonify({"error": "invalid case ID"})
 
-#     case = client.db.cases.find_one({'_id': ObjectId(caseID)})
+    case = client.db.cases.find_one({'_id': ObjectId(caseID)})
 
-#     if (not case):
-#         return jsonify({"error": "invalid case ID"})
+    if (not case):
+        return jsonify({"error": "invalid case ID"})
 
-#     try:
-#         side = request.args.get('side')
-#         if(side == None):
-#             return jsonify({"error": "please provide the valid parameters (side, image)"})
-#         elif(side != "front" and side != "back" and side != "left" and side != "right"):
-#             return jsonify({"error": "please provide the valid side option (front, back, left or right)"})
-#         image = request.files['image']
-#     except:
-#         return jsonify({"error": "please provide the valid parameters (side, image)"}) 
+    try:
+        side = request.args.get('side')
+        if(side == None):
+            return jsonify({"error": "please provide the valid parameters (side, image)"})
+        elif(side != "front" and side != "back" and side != "left" and side != "right"):
+            return jsonify({"error": "please provide the valid side option (front, back, left or right)"})
+        image = request.files['image']
+    except:
+        return jsonify({"error": "please provide the valid parameters (side, image)"}) 
 
-#     # store the image with side name
-#     if(not os.path.isdir("./static/images/{}".format(caseID))):
-#         os.mkdir("./static/images/{}".format(caseID))
+    # store the image with side name
+    if(not os.path.isdir("./static/images/{}".format(caseID))):
+        os.mkdir("./static/images/{}".format(caseID))
 
-#     img_name = str(side) + ".jpg"
-#     img_path = "./static/images/{}/{}".format(caseID,img_name)
-#     image.save(img_path)
+    img_name = str(side) + ".jpg"
+    img_path = "./static/images/{}/{}".format(caseID,img_name)
+    image.save(img_path)
 
-#     # extract class
-#     count, class_name = getClass(img_path)
+    # extract class
+    count, class_name = getClass(img_path)
 
-#     if(count != 1):
-#         if(count == 0):
-#             return jsonify({"error": "image provided cannot be used as a target"})
-#         else:    
-#             return jsonify({"error": "image provided contains more than 1 bag"})
+    if(count != 1):
+        if(count == 0):
+            return jsonify({"error": "image provided cannot be used as a target"})
+        else:    
+            return jsonify({"error": "image provided contains more than 1 bag"})
 
-#     img_class = case['class']
+    img_class = case['class']
 
-#     if(img_class):
-#         if(img_class != class_name):
-#             return jsonify({"error": "bag category mismatch"})
+    if(img_class):
+        if(img_class != class_name):
+            return jsonify({"error": "bag category mismatch"})
 
-#     # extract features
-#     ln = featureCount(img_path)
+    # extract features
+    ln = featureCount(img_path)
 
-#     if(ln < 10):
-#         return jsonify({"error": "image provided cannot be used as a target because of low quality"})
+    if(ln < 10):
+        return jsonify({"error": "image provided cannot be used as a target because of low quality"})
     
-#     # extract colors
-#     clrs = extractColor(img_path)
+    # extract colors
+    clrs = extractColor(img_path)
     
-#     # save data into the database
-#     new_side = {
-#         "side": side,
-#         "colors": clrs,
-#         "status": 0
-#     }
+    # save data into the database
+    new_side = {
+        "side": side,
+        "colors": clrs,
+        "status": 0
+    }
 
-#     sides = case['target']['sides']
+    sides = case['target']['sides']
     
-#     if(not sides):
-#         new_sides = [new_side]
-#     else:
-#         for s in sides:
-#             if(s['side'] == side):
-#                 sides.remove(s)
-#                 break    
-#         sides.append(new_side)
-#         new_sides = sides
+    if(not sides):
+        new_sides = [new_side]
+    else:
+        for s in sides:
+            if(s['side'] == side):
+                sides.remove(s)
+                break    
+        sides.append(new_side)
+        new_sides = sides
 
-#     update = {
-#         "class": class_name,
-#         "target": {
-#             "status": 0,
-#             "sides": new_sides
-#         }
-#     }
+    update = {
+        "class": class_name,
+        "target": {
+            "status": 0,
+            "sides": new_sides
+        }
+    }
 
-#     client.db.cases.update_one({'_id': ObjectId(caseID)}, {'$set': update})
+    client.db.cases.update_one({'_id': ObjectId(caseID)}, {'$set': update})
 
-#     # response the data
-#     link = "http://localhost:5000/images/{}/{}".format(caseID,img_name)
+    # response the data
+    link = "http://localhost:5000/images/{}/{}".format(caseID,img_name)
 
-#     res = {
-#         "features_found": ln,
-#         "colors": clrs,
-#         "img_link": link,
-#         "side": side
-#     }
+    res = {
+        "features_found": ln,
+        "colors": clrs,
+        "img_link": link,
+        "side": side
+    }
     
-#     return jsonify(res), 200
+    return jsonify(res), 200
 
 # Set Target Colors Method
 @app.route('/setcolor', methods=['POST'])
@@ -294,9 +294,9 @@ def Set_Color():
 
     return jsonify({"message": "success", "res": updated_target})
 
-# Set Target Colors Method
-@app.route('/gettarget', methods=['POST'])
-def Get_Target():
+# Test target
+@app.route('/testtarget', methods=['POST'])
+def Test_Target():
     try:
         caseID = request.headers['caseID']
     except:
@@ -333,6 +333,6 @@ def Get_Target():
     return "ok"
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0',debug=True, port=5000)
 
     # 5f1431a9849cbc57c04dcb04

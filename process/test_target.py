@@ -153,10 +153,10 @@ def testTarget(image=None, target_class, target):
 
     
 
-    for bimg in bags_img:
+    # for bimg in bags_img:
 
 
 
-    img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
+    # img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
         
-    return img, count, bags
+    return bags
