@@ -116,7 +116,7 @@ def color(img, sides):
     return outcome
 
 
-def testTarget(image=None, target_class, target):
+def testTarget(image, target_class, target):
     raw_img = tf.image.decode_image(open(image, 'rb').read(), channels=3)
     img = tf.expand_dims(raw_img, 0)
     img = transform_images(img, size)
