@@ -1,0 +1,162 @@
+import cv2
+import numpy as np
+import tensorflow as tf
+from process.yolov3_tf2.models import YoloV3
+from process.yolov3_tf2.dataset import transform_images
+from process.yolov3_tf2.utils import draw_outputs
+import os
+
+from collections import Counter
+from sklearn.cluster import KMeans
+
+from process.init import yolo, class_names
+size = 416
+
+orb = cv2.ORB_create(5000, 2.0)
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
+
+def hsv(clr):
+    r = clr[0]
+    g = clr[1]
+    b = clr[2]
+    r, g, b = r/255.0, g/255.0, b/255.0
+    mx = max(r, g, b)
+    mn = min(r, g, b)
+    df = mx-mn
+    if mx == mn:
+        h = 0
+    elif mx == r:
+        h = (60 * ((g-b)/df) + 360) % 360
+    elif mx == g:
+        h = (60 * ((b-r)/df) + 120) % 360
+    elif mx == b:
+        h = (60 * ((r-g)/df) + 240) % 360
+    if mx == 0:
+        s = 0
+    else:
+        s = (df/mx)*100
+    v = mx*100
+
+    return [int(h), int(s), int(v)]
+
+def orb(img, sides, caseID):
+    query_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
+    
+    outcome = []
+
+    for side in sides:
+        image_path = "./static/images/{}/{}.jpg".format(caseID,side)
+        train_img = cv2.imread(image_path)
+        train_img = cv2.cvtColor(train_img, cv2.COLOR_BGR2GRAY)
+
+        keypoints_train, descriptors_train = orb.detectAndCompute(train_img, None)
+        keypoints_query, descriptors_query = orb.detectAndCompute(query_img, None)
+        
+        total_keys = len(keypoints_train)
+
+        matches = bf.match(descriptors_train, descriptors_query)
+        matches = sorted(matches, key = lambda x : x.distance)
+        matched_keys = len(matches)
+
+        success = (100*matched_keys)/total_keys
+
+        res = {
+            "side": side,
+            "success": success
+        }
+        outcome.append(res)
+
+    return outcome    
+
+def color(img, sides):
+
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    modified_image = image.reshape(image.shape[0]*image.shape[1], 3)
+
+    number_of_colors = 7
+
+    clf = KMeans(n_clusters = number_of_colors)
+    labels = clf.fit_predict(modified_image)
+
+    counts = Counter(labels)
+    center_colors = clf.cluster_centers_
+
+    ordered_colors = [center_colors[i] for i in counts.keys()]
+    rgb_colors = [ordered_colors[i] for i in counts.keys()]
+
+    hsv_colors = []
+    point_values = counts.values()
+    total_points = 0
+
+    for rgb in range(len(rgb_colors)):
+        hsv_colors.append(hsv(rgb_colors[rgb]))
+        total_points += point_values[rgb]
+
+    hsv_points = []
+    for point in counts.values():
+        hsv_points.append((100*point)/total_points)
+
+    outcome = []
+
+    for side in sides:
+        success = 0.0
+        for i in range(len(hsv_colors)):
+            test_clr = hsv_colors[i]
+            for train_clr in side['colors']:
+                if(train_clr['lw'][0]>=test_clr[0] and train_clr['lw'][1]>=test_clr[1] and train_clr['lw'][2]>=test_clr[2] and train_clr['up'][0]<=test_clr[0] and train_clr['up'][1]<=test_clr[1] and train_clr['up'][2]<=test_clr[2]):
+                    success += hsv_points[i]
+                    break
+        
+        res = {
+            "side": side['side'],
+            "success": success
+        }
+        outcome.append(res)
+
+    return outcome
+
+
+def testTarget(image=None, target_class, target):
+    raw_img = tf.image.decode_image(open(image, 'rb').read(), channels=3)
+    img = tf.expand_dims(raw_img, 0)
+    img = transform_images(img, size)
+
+    boxes, scores, classes, nums = yolo(img)
+
+    bags = []
+    for i in range(nums[0]):
+        temp_class = class_names[int(classes[0][i])]
+        if (temp_class == target_class):
+            box = []
+            [box.append(float(i)) for i in np.array(boxes[0][i])]
+            bag = {
+                "confidence": float(np.array(scores[0][i])),
+                "box": box
+            }
+            bags.append(bag) 
+    
+    img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
+    h = img.shape[0]
+    w = img.shape[1]
+
+    bags_img = []
+
+    for bag in bags:
+        box = bag['box']
+        cropped = img[int(box[1]*h):int(box[3]*h), int(box[0]*w):int(box[2]*w)]
+        bags_img.append(cropped)    
+
+    sides = []
+
+    for s in target['sides']:
+        sides.append(s['side'])
+
+    
+
+    for bimg in bags_img:
+
+
+
+    img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
+        
+    return img, count, bags
