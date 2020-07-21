@@ -7,3 +7,4 @@ flask
 seaborn
 pillow
 sklearn
+flask_pymongo
