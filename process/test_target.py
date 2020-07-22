@@ -39,7 +39,7 @@ def hsv(clr):
 
     return [int(h), int(s), int(v)]
 
-def orb(img, sides, caseID):
+def orb_feature(img, sides, caseID):
     query_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
     
     outcome = []
@@ -154,7 +154,7 @@ def testTarget(image, target_class, target, caseID):
     bag_score = []   
 
     for bimg in bags_img:
-        img_orb = orb(bimg, sides, caseID)
+        img_orb = orb_feature(bimg, sides, caseID)
         img_color = color(bimg, target['sides'])
 
         max_score = 0.0
