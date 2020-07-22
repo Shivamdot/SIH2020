@@ -6,7 +6,6 @@ from process.yolov3_tf2.dataset import transform_images
 from process.yolov3_tf2.utils import draw_outputs, draw_output
 import os
 
-from collections import Counter
 from sklearn.cluster import KMeans
 
 from process.init import yolo, class_names
@@ -77,24 +76,22 @@ def color(img, sides):
 
     clf = KMeans(n_clusters = number_of_colors)
     labels = clf.fit_predict(modified_image)
-
-    counts = Counter(labels)
     center_colors = clf.cluster_centers_
 
-    ordered_colors = [center_colors[i] for i in counts.keys()]
-    rgb_colors = [ordered_colors[i] for i in counts.keys()]
+    label_count = [0 for i in range(number_of_colors)]
 
-    hsv_colors = []
-    point_values = list(counts.values())
-    total_points = 0
-
-    for rgb in range(len(rgb_colors)):
-        hsv_colors.append(hsv(rgb_colors[rgb]))
-        total_points += point_values[rgb]
+    for ele in labels:
+        label_count[ele] += 1
 
     hsv_points = []
-    for point in list(counts.values()):
-        hsv_points.append((100*point)/total_points)
+
+    for i in range(number_of_colors) :
+        hsv_points.append((label_count[i]*100)/len(labels))
+
+    hsv_colors = []
+    
+    for rgb in center_colors:
+        hsv_colors.append(hsv(rgb))
 
     outcome = []
 
