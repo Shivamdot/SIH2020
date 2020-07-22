@@ -110,7 +110,7 @@ def color(img, sides):
             for train_clr in side['colors']:
                 print(train_clr['lw'])
                 print(train_clr['up'])
-                if(train_clr['lw'][0]>=test_clr[0] and train_clr['lw'][1]>=test_clr[1] and train_clr['lw'][2]>=test_clr[2] and train_clr['up'][0]<=test_clr[0] and train_clr['up'][1]<=test_clr[1] and train_clr['up'][2]<=test_clr[2]):
+                if(train_clr['lw'][0]<=test_clr[0] and train_clr['lw'][1]<=test_clr[1] and train_clr['lw'][2]<=test_clr[2] and train_clr['up'][0]>=test_clr[0] and train_clr['up'][1]>=test_clr[1] and train_clr['up'][2]>=test_clr[2]):
                     success += hsv_points[i]
                     break
         
