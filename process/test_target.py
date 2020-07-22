@@ -139,6 +139,9 @@ def testTarget(image, target_class, target, caseID):
     h = img.shape[0]
     w = img.shape[1]
 
+    if(not len(bags) > 0):
+        return img
+
     bags_img = []
 
     for bag in bags:
@@ -165,7 +168,10 @@ def testTarget(image, target_class, target, caseID):
             if((v1+v2) > max_score):
                 max_score = v1+v2
 
-        bag_score.append(max_score)
+        if(max_score < 40):
+            bag_score.append(-1.0)
+        else:       
+            bag_score.append(max_score)
 
     best_bag_index = 0
     score = bag_score[0]
@@ -175,8 +181,8 @@ def testTarget(image, target_class, target, caseID):
             score = bag_score[i]
             best_bag_index = i
  
-    best_bag_box = bags[best_bag_index]['box']
-
-    img = draw_output(img, best_bag_box)
+    if(not score == -1.0):
+        best_bag_box = bags[best_bag_index]['box']
+        img = draw_output(img, best_bag_box)
         
     return img
