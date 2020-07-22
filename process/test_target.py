@@ -86,7 +86,7 @@ def color(img, sides):
 
     hsv_colors = []
     point_values = list(counts.values())
-    total_points = 0'
+    total_points = 0
 
     print(point_values)
 
