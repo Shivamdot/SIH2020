@@ -22,11 +22,35 @@ def hsv(clr):
 
     return [int(h), int(s), int(v)]
 
+def testColorH(val):
+    if(val < 0):
+        return 0
+    elif(val > 360):
+        return 360
+    else:
+        return val
+
+def testColor(val):
+    if(val < 0):
+        return 0
+    elif(val > 100):
+        return 100
+    else:
+        return val               
+
 def setColors(clrs=None):
 
     for clr in clrs:
         hsv_value = hsv(clr['rgb'])
-        clr['lw'] = [hsv_value[0]-10, hsv_value[0]-10, hsv_value[0]-15]
-        clr['up'] = [hsv_value[0]+10, hsv_value[0]+10, hsv_value[0]+15]
+        l1 = testColorH(hsv_value[0]-10)
+        l2 = testColor(hsv_value[1]-10)
+        l3 = testColor(hsv_value[2]-15)
+
+        u1 = testColorH(hsv_value[0]+10)
+        u2 = testColor(hsv_value[1]+10)
+        u3 = testColor(hsv_value[2]+15)
+
+        clr['lw'] = [l1, l2, l3]
+        clr['up'] = [u1, u2, u3]
 
     return clrs    
