@@ -85,7 +85,7 @@ def color(img, sides):
     rgb_colors = [ordered_colors[i] for i in counts.keys()]
 
     hsv_colors = []
-    point_values = list(counts.values())[0]
+    point_values = list(counts.values())
     total_points = 0
 
     for rgb in range(len(rgb_colors)):
