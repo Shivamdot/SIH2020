@@ -167,9 +167,9 @@ def testTarget(image, target_class, target, caseID):
             v2 = (img_color[j]['success']*70)/100
             if((v1+v2) > max_score):
                 max_score = v1+v2
-
+        print(max_score)
         if(max_score < 40):
-            bag_score.append(-1.0)
+            bag_score.append(-1)
         else:       
             bag_score.append(max_score)
 
@@ -181,7 +181,7 @@ def testTarget(image, target_class, target, caseID):
             score = bag_score[i]
             best_bag_index = i
  
-    if(not score == -1.0):
+    if(not score == -1):
         best_bag_box = bags[best_bag_index]['box']
         img = draw_output(img, best_bag_box)
         
