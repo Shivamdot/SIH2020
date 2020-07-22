@@ -165,9 +165,11 @@ def testTarget(image, target_class, target, caseID):
         for j in range(len(sides)):
             v1 = (img_orb[j]['success']*30)/100
             v2 = (img_color[j]['success']*70)/100
+
+            print(v1)
+            print(v2)
             if((v1+v2) > max_score):
                 max_score = v1+v2
-        print(max_score)
         if(max_score < 40):
             bag_score.append(-1)
         else:       
