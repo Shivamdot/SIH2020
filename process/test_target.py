@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from process.yolov3_tf2.models import YoloV3
 from process.yolov3_tf2.dataset import transform_images
-from process.yolov3_tf2.utils import draw_outputs
+from process.yolov3_tf2.utils import draw_outputs, draw_output
 import os
 
 from collections import Counter
@@ -116,7 +116,7 @@ def color(img, sides):
     return outcome
 
 
-def testTarget(image, target_class, target):
+def testTarget(image, target_class, target, caseID):
     raw_img = tf.image.decode_image(open(image, 'rb').read(), channels=3)
     img = tf.expand_dims(raw_img, 0)
     img = transform_images(img, size)
@@ -151,12 +151,32 @@ def testTarget(image, target_class, target):
     for s in target['sides']:
         sides.append(s['side'])
 
-    
+    bag_score = []   
 
-    # for bimg in bags_img:
+    for bimg in bags_img:
+        img_orb = orb(bimg, sides, caseID)
+        img_color = color(bimg, target['sides'])
 
+        max_score = 0.0
 
+        for j in range(len(sides)):
+            v1 = (img_orb[j]['success']*30)/100
+            v2 = (img_color[j]['success']*70)/100
+            if((v1+v2) > max_score):
+                max_score = v1+v2
 
-    # img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
+        bag_score.append(max_score)
+
+    best_bag_index = 0
+    score = bag_score[0]
+
+    for i in range(len(bag_score)):
+        if(bag_score[i] > score):
+            score = bag_score[i]
+            best_bag_index = i
+ 
+    best_bag_box = bags[best_bag_index]['box']
+
+    img = draw_output(img, best_bag_box)
         
-    return bags
+    return img

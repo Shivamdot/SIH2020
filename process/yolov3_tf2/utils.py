@@ -138,6 +138,27 @@ def draw_outputs(img, outputs, class_names):
 
     return img
 
+def draw_output(img, box):
+    wh = np.flip(img.shape[0:2])
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(img)
+    draw = ImageDraw.Draw(img)
+
+    x1y1 = ((box[0:2] * wh).astype(np.int32))
+    x2y2 = ((box[2:4] * wh).astype(np.int32))
+    thickness = 2
+    for t in np.linspace(0, 1, thickness):
+        x1y1[0], x1y1[1] = x1y1[0] - t, x1y1[1] - t
+        x2y2[0], x2y2[1] = x2y2[0] - t, x2y2[1] - t
+        draw.rectangle([x1y1[0], x1y1[1], x2y2[0], x2y2[1]], outline = "green")
+
+    rgb_img = img.convert('RGB')
+    img_np = np.asarray(rgb_img)
+    img = cv2.cvtColor(img_np, cv2.COLOR_BGR2RGB)
+
+    return img
+
+
 
 def draw_labels(x, y, class_names):
     colors = ((np.array(color_palette("hls", 80)) * 255)).astype(np.uint8)

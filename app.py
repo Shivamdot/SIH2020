@@ -73,14 +73,14 @@ def Find_Target():
     
 
     if(isID > 0):
-        temp_path = "/Project/static/temporary/{}.jpg".format(imgID)
+        temp_path = "./static/temporary/{}.jpg".format(imgID)
         # 
     else:
         filename = image.filename
         cur_time = str(int(time.time()))
         temp_name = "{}-{}".format(cur_time, filename)
 
-        temp_path = "/Project/static/temporary/{}".format(temp_name)
+        temp_path = "./static/temporary/{}".format(temp_name)
         image.save("./static/temporary/{}".format(temp_name))
 
     img, num, bags = findTarget(temp_path, isID)
@@ -90,7 +90,7 @@ def Find_Target():
     cur_time = str(int(time.time()))
     temp_name = cur_time + ".jpg"
 
-    cv2.imwrite("/Project/static/temporary/" + str(temp_name), img)
+    cv2.imwrite("./static/temporary/" + str(temp_name), img)
     link = "http://localhost:5000/temporary/{}".format(temp_name)
 
     if(isID > 0):
@@ -328,9 +328,17 @@ def Test_Target():
     target_class = case['class']
     target = case['target']
 
-    res = testTarget(img_path, target_class, target, caseID)
+    res_img = testTarget(img_path, target_class, target, caseID)
 
-    return "ok"
+    os.remove(img_path)
+
+    cur_time = str(int(time.time()))
+    temp_name = cur_time + ".jpg"
+
+    cv2.imwrite("./static/temporary/" + str(temp_name), res_img)
+    link = "http://localhost:5000/temporary/{}".format(temp_name)
+
+    return jsonify({'link': link})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
