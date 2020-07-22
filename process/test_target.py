@@ -93,10 +93,11 @@ def color(img, sides):
         total_points += point_values[rgb]
 
     hsv_points = []
-    for point in counts.values():
+    for point in list(counts.values()):
         hsv_points.append((100*point)/total_points)
 
     print(hsv_points)
+    print(hsv_colors)
 
     outcome = []
 
