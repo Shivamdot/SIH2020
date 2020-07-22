@@ -126,7 +126,7 @@ def testTarget(image, target_class, target, caseID):
     bags = []
     for i in range(nums[0]):
         temp_class = class_names[int(classes[0][i])]
-        if (temp_class == target_class):
+        if (temp_class=="suitcase" or temp_class=="handbag" or temp_class=="backpack"):
             box = []
             [box.append(float(i)) for i in np.array(boxes[0][i])]
             bag = {
