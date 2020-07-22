@@ -98,6 +98,9 @@ def color(img, sides):
 
     outcome = []
 
+    print(hsv_points)
+    print(hsv_colors)
+
     for side in sides:
         success = 0.0
         for i in range(len(hsv_colors)):
