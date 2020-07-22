@@ -43,11 +43,11 @@ def setColors(clrs=None):
     for clr in clrs:
         hsv_value = hsv(clr['rgb'])
         l1 = testColorH(hsv_value[0]-10)
-        l2 = testColor(hsv_value[1]-10)
+        l2 = testColor(hsv_value[1]-20)
         l3 = testColor(hsv_value[2]-15)
 
         u1 = testColorH(hsv_value[0]+10)
-        u2 = testColor(hsv_value[1]+10)
+        u2 = testColor(hsv_value[1]+20)
         u3 = testColor(hsv_value[2]+15)
 
         clr['lw'] = [l1, l2, l3]
