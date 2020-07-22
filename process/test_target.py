@@ -86,11 +86,15 @@ def color(img, sides):
 
     hsv_colors = []
     point_values = list(counts.values())
-    total_points = 0
+    total_points = 0'
+
+    print(point_values)
 
     for rgb in range(len(rgb_colors)):
         hsv_colors.append(hsv(rgb_colors[rgb]))
         total_points += point_values[rgb]
+
+    print(total_points)
 
     hsv_points = []
     for point in counts.values():
