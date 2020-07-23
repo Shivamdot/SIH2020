@@ -13,7 +13,7 @@ size = 416
 # ./static/videos/output.avi
 def getTarget(video, caseID):
 
-    output = "./static/videos/{}/output.avi".format(caseID)
+    output = "./static/videos/{}/output.mp4".format(caseID)
 
     vid = cv2.VideoCapture(video)
 
@@ -51,5 +51,5 @@ def getTarget(video, caseID):
 
         out.write(img)
 
-    link = "http://35.225.41.24/videos/{}/output.avi".format(caseID)
+    link = "http://35.225.41.24/videos/{}/output.mp4".format(caseID)
     return link
