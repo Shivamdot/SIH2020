@@ -13,7 +13,6 @@ from process.init import yolo, class_names
 size = 416
 
 orb = cv2.ORB_create(5000, 2.0)
-bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
 
 def hsv(clr):
     r = clr[0]
@@ -53,7 +52,8 @@ def orb_feature(img, sides, caseID):
         keypoints_query, descriptors_query = orb.detectAndCompute(query_img, None)
         
         total_keys = len(keypoints_train)
-
+        
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
         matches = bf.match(descriptors_train, descriptors_query)
         matches = sorted(matches, key = lambda x : x.distance)
         matched_keys = len(matches)
