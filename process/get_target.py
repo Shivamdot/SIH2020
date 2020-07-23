@@ -54,7 +54,7 @@ def orb_feature(img, sides, caseID):
         
         total_keys = len(keypoints_train)
         
-        if(not descriptors_query == None):
+        if(descriptors_query is not None):
             bf = cv2.BFMatcher(cv2.NORM_L1, crossCheck = False)
             matches = bf.match(descriptors_train, descriptors_query)
             matches = sorted(matches, key = lambda x : x.distance)
