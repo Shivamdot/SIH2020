@@ -359,21 +359,23 @@ def Get_Target():
     if(not case['target']['status']):
         return jsonify({"error": "first please set the target properly to perform further detections"})
 
-    try:
-        video = request.files['video']
-    except:
-        return jsonify({"error": "please provide the valid parameter (video)"})
+    # try:
+    #     video = request.files['video']
+    # except:
+    #     return jsonify({"error": "please provide the valid parameter (video)"})
 
     # store the video in its caseID folder
     if(not os.path.isdir("./static/videos/{}".format(caseID))):
         os.mkdir("./static/videos/{}".format(caseID))
 
-    filename = video.filename
-    cur_time = str(int(time.time()))
-    vid_name = "{}-{}".format(cur_time, filename)
+    # filename = video.filename
+    # cur_time = str(int(time.time()))
+    # vid_name = "{}-{}".format(cur_time, filename)
 
-    vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
-    video.save(vid_path)
+    # vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
+    # video.save(vid_path)
+
+    vid_path = "./process/train.mp4"
 
     link = getTarget(vid_path, caseID)
 
