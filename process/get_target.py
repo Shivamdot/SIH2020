@@ -54,12 +54,15 @@ def orb_feature(img, sides, caseID):
         
         total_keys = len(keypoints_train)
         
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
-        matches = bf.match(descriptors_train, descriptors_query)
-        matches = sorted(matches, key = lambda x : x.distance)
-        matched_keys = len(matches)
+        if(not descriptors_query == None):
+            bf = cv2.BFMatcher(cv2.NORM_L1, crossCheck = False)
+            matches = bf.match(descriptors_train, descriptors_query)
+            matches = sorted(matches, key = lambda x : x.distance)
+            matched_keys = len(matches)
 
-        success = (100*matched_keys)/total_keys
+            success = (100*matched_keys)/total_keys
+        else:
+            success = 0    
 
         res = {
             "side": side,
