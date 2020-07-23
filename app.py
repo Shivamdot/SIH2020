@@ -378,7 +378,7 @@ def Get_Target():
     # vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
     # video.save(vid_path)
 
-    vid_path = "./process/train.mp4"
+    vid_path = "./process/train_Trim.mp4"
 
     target = case['target']
 

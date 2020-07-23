@@ -4,11 +4,16 @@ import numpy as np
 import tensorflow as tf
 from process.yolov3_tf2.models import YoloV3
 from process.yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
-from process.yolov3_tf2.utils import draw_outputs
+from process.yolov3_tf2.utils import draw_outputs, draw_output
 import os
+
+from sklearn.cluster import KMeans
 
 from process.init import yolo, class_names
 size = 416
+
+orb = cv2.ORB_create(5000, 2.0)
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
 
 def hsv(clr):
     r = clr[0]
