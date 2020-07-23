@@ -368,10 +368,10 @@ def Get_Target():
     cur_time = str(int(time.time()))
     vid_name = "{}-{}".format(cur_time, filename)
 
-    vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
+    vid_path = "./static/videos/{}".format(vid_name)
     video.save(vid_path)
 
-    link = "http://35.225.41.24/videos/{}/{}".format(caseID,vid_name)
+    link = "http://35.225.41.24/videos/{}".format(vid_name)
 
     return jsonify({"link": link}), 200
 
