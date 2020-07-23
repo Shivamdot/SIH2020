@@ -364,14 +364,18 @@ def Get_Target():
     except:
         return jsonify({"error": "please provide the valid parameter (video)"})
 
+    # store the video in its caseID folder
+    if(not os.path.isdir("./static/videos/{}".format(caseID))):
+        os.mkdir("./static/videos/{}".format(caseID))
+
     filename = video.filename
     cur_time = str(int(time.time()))
     vid_name = "{}-{}".format(cur_time, filename)
 
-    vid_path = "./static/videos/{}".format(vid_name)
+    vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
     video.save(vid_path)
 
-    link = "http://35.225.41.24/videos/{}".format(vid_name)
+    link = getTarget(vid_path, caseID)
 
     return jsonify({"link": link}), 200
 

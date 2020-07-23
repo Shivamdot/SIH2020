@@ -11,7 +11,10 @@ from process.init import yolo, class_names
 size = 416
 
 # ./static/videos/output.avi
-def getTarget(video, output):
+def getTarget(video, caseID):
+
+    output = "./static/videos/{}/output.avi".format(caseID)
+
     vid = cv2.VideoCapture(video)
 
     width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -48,4 +51,5 @@ def getTarget(video, output):
 
         out.write(img)
 
-    return fps    
+    link = "http://35.225.41.24/videos/{}/output.avi".format(caseID)
+    return link
