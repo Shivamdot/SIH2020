@@ -341,6 +341,9 @@ def Test_Target():
 
     return jsonify({'link': link})
 
+
+
+
 @app.route('/gettarget', methods=['POST'])
 def Get_Target():
     try:
@@ -377,7 +380,9 @@ def Get_Target():
 
     vid_path = "./process/train.mp4"
 
-    link = getTarget(vid_path, caseID)
+    target = case['target']
+
+    link = getTarget(vid_path, target, caseID)
 
     return jsonify({"link": link}), 200
 
