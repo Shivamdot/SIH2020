@@ -45,7 +45,7 @@ def getTarget(video, caseID):
         boxes, scores, classes, nums = yolo.predict(img_in)
         fps  = ( fps + (1./(time.time()-t1)) ) / 2
 
-        print("FPS: " + fps)
+        print("FPS: " + str(fps))
 
         img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
 
