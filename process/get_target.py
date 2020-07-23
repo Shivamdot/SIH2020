@@ -12,7 +12,6 @@ from sklearn.cluster import KMeans
 from process.init import yolo, class_names
 size = 416
 
-orb = cv2.ORB_create(5000, 2.0)
 
 def hsv(clr):
     r = clr[0]
@@ -47,6 +46,8 @@ def orb_feature(img, sides, caseID):
         image_path = "./static/images/{}/{}.jpg".format(caseID,side)
         train_img = cv2.imread(image_path)
         train_img = cv2.cvtColor(train_img, cv2.COLOR_BGR2GRAY)
+
+        orb = cv2.ORB_create(5000, 2.0)
 
         keypoints_train, descriptors_train = orb.detectAndCompute(train_img, None)
         keypoints_query, descriptors_query = orb.detectAndCompute(query_img, None)
@@ -95,9 +96,6 @@ def color(img, sides):
         hsv_colors.append(hsv(rgb))
 
     outcome = []
-
-    print(hsv_points)
-    print(hsv_colors)
 
     for side in sides:
         success = 0.0
