@@ -25,6 +25,7 @@ from process.set_target import featureCount
 from process.set_target import extractColor
 from process.set_colors import setColors
 from process.test_target import testTarget
+from process.get_target import getTarget
 
 # Initialize Flask application
 app = Flask(__name__, static_url_path='')
@@ -339,6 +340,40 @@ def Test_Target():
     link = "http://localhost:5000/temporary/{}".format(temp_name)
 
     return jsonify({'link': link})
+
+@app.route('/gettarget', methods=['POST'])
+def Get_Target():
+    try:
+        caseID = request.headers['caseID']
+    except:
+        return jsonify({"error": "'caseID' header file record is missing"})  
+
+    if(not ObjectId.is_valid(caseID)):
+        return jsonify({"error": "invalid case ID"})
+
+    case = client.db.cases.find_one({'_id': ObjectId(caseID)})
+
+    if (not case):
+        return jsonify({"error": "invalid case ID"})
+
+    if(not case['target']['status']):
+        return jsonify({"error": "first please set the target properly to perform further detections"})
+
+    try:
+        video = request.files['video']
+    except:
+        return jsonify({"error": "please provide the valid parameter (video)"})
+
+    filename = video.filename
+    cur_time = str(int(time.time()))
+    vid_name = "{}-{}".format(cur_time, filename)
+
+    vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
+    video.save(vid_path)
+
+    link = "http://35.225.41.24/videos/{}/{}".format(caseID,vid_name)
+
+    return jsonify({"link": link}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
