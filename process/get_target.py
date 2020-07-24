@@ -48,21 +48,23 @@ def orb_feature(img, sides, caseID):
         train_img = cv2.cvtColor(train_img, cv2.COLOR_BGR2GRAY)
 
         orb = cv2.ORB_create(5000, 2.0)
+        try:
+            keypoints_train, descriptors_train = orb.detectAndCompute(train_img, None)
+            keypoints_query, descriptors_query = orb.detectAndCompute(query_img, None)
+            
+            total_keys = len(keypoints_train)
+            
+            if(descriptors_query is not None):
+                bf = cv2.BFMatcher(cv2.NORM_L1, crossCheck = False)
+                matches = bf.match(descriptors_train, descriptors_query)
+                matches = sorted(matches, key = lambda x : x.distance)
+                matched_keys = len(matches)
 
-        keypoints_train, descriptors_train = orb.detectAndCompute(train_img, None)
-        keypoints_query, descriptors_query = orb.detectAndCompute(query_img, None)
-        
-        total_keys = len(keypoints_train)
-        
-        if(descriptors_query is not None):
-            bf = cv2.BFMatcher(cv2.NORM_L1, crossCheck = False)
-            matches = bf.match(descriptors_train, descriptors_query)
-            matches = sorted(matches, key = lambda x : x.distance)
-            matched_keys = len(matches)
-
-            success = (100*matched_keys)/total_keys
-        else:
-            success = 0    
+                success = (100*matched_keys)/total_keys
+            else:
+                success = 0
+        except:
+            success = 0        
 
         res = {
             "side": side,
@@ -197,7 +199,7 @@ def getTarget(video, target, caseID):
                 v2 = (img_color[j]['success']*70)/100
                 if((v1+v2) > max_score):
                     max_score = v1+v2
-            if(max_score < 30):
+            if(max_score < 40):
                 bag_score.append(-1)
             else:       
                 bag_score.append(max_score)
