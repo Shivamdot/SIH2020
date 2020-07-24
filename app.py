@@ -2,6 +2,7 @@ import os
 import cv2
 import time
 import json
+import threading
 from PIL import Image
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
@@ -382,9 +383,14 @@ def Get_Target():
 
     target = case['target']
 
-    link = getTarget(vid_path, target, caseID)
+    # getTarget(vid_path, target, caseID)
 
-    return jsonify({"link": link}), 200
+    t = threading.Thread(target=getTarget, args=[vid_path, target, caseID])
+    t.start()
+
+    link = "http://35.225.41.24/videos/{}/output.avi".format(caseID)
+
+    return jsonify({"message": "started the process", "link": link}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)

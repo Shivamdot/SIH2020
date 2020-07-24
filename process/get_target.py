@@ -219,6 +219,3 @@ def getTarget(video, target, caseID):
 
         print("FPS: " + str(fps))
         out.write(img)
-
-    link = "http://35.225.41.24/videos/{}/output.avi".format(caseID)
-    return link
