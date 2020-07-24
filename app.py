@@ -154,9 +154,9 @@ def Set_Target():
 
     img_class = case['class']
 
-    if(img_class):
-        if(img_class != class_name):
-            return jsonify({"error": "bag category mismatch"})
+    # if(img_class):
+    #     if(img_class != class_name):
+    #         return jsonify({"error": "bag category mismatch"})
 
     # extract features
     ln = featureCount(img_path)
