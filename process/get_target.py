@@ -64,7 +64,8 @@ def orb_feature(img, sides, caseID):
             else:
                 success = 0
         except:
-            success = 0        
+            success = 0  
+            print("orb error")      
 
         res = {
             "side": side,
