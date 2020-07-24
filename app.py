@@ -146,11 +146,11 @@ def Set_Target():
     # extract class
     count, class_name = getClass(img_path)
 
-    if(count != 1):
-        if(count == 0):
-            return jsonify({"error": "image provided cannot be used as a target"})
-        else:    
-            return jsonify({"error": "image provided contains more than 1 bag"})
+    # if(count != 1):
+    #     if(count == 0):
+    #         return jsonify({"error": "image provided cannot be used as a target"})
+    #     else:    
+    #         return jsonify({"error": "image provided contains more than 1 bag"})
 
     img_class = case['class']
 
@@ -161,8 +161,8 @@ def Set_Target():
     # extract features
     ln = featureCount(img_path)
 
-    if(ln < 10):
-        return jsonify({"error": "image provided cannot be used as a target because of low quality"})
+    # if(ln < 10):
+        # return jsonify({"error": "image provided cannot be used as a target because of low quality"})
     
     # extract colors
     clrs = extractColor(img_path)
@@ -187,7 +187,7 @@ def Set_Target():
         new_sides = sides
 
     update = {
-        "class": class_name,
+        "class": "suitcase",
         "target": {
             "status": 0,
             "sides": new_sides
@@ -341,8 +341,6 @@ def Test_Target():
     link = "http://localhost:5000/temporary/{}".format(temp_name)
 
     return jsonify({'link': link})
-
-
 
 
 @app.route('/gettarget', methods=['POST'])
