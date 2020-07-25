@@ -377,7 +377,7 @@ def Get_Target():
     # vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
     # video.save(vid_path)
 
-    vid_path = "./process/train_Trim.mp4"
+    vid_path = "./static/videos/train_Trim.mp4"
 
     target = case['target']
 
@@ -386,7 +386,7 @@ def Get_Target():
     t = threading.Thread(target=getTarget, args=[vid_path, target, caseID])
     t.start()
 
-    link = "http://35.225.41.24/videos/{}/output.avi".format(caseID)
+    link = "http://52.146.37.96/videos/{}/output.mp4".format(caseID)
 
     return jsonify({"message": "started the process", "link": link}), 200
 

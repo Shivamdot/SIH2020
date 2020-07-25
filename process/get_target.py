@@ -124,14 +124,14 @@ def color(img, sides):
 # ./static/videos/output.avi
 def getTarget(video, target, caseID):
 
-    output = "./static/videos/{}/output.avi".format(caseID)
+    output = "./static/videos/{}/output.mp4".format(caseID)
 
     vid = cv2.VideoCapture(video)
 
     width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(vid.get(cv2.CAP_PROP_FPS))
-    codec = cv2.VideoWriter_fourcc(*'XVID')
+    codec = cv2.VideoWriter_fourcc(*'MP4V')
     out = cv2.VideoWriter(output, codec, fps, (width, height))
 
     fps = 0.0
