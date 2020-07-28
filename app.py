@@ -92,7 +92,7 @@ def Get_A_Case():
         return jsonify({"error": "invalid case ID"})
 
     res = {
-        "caseID": str(case['_id'])
+        "caseID": str(case['_id']),
         "name": case['name'],
         "class": case['class'],
         "target": case['target'],
