@@ -91,7 +91,7 @@ def Get_A_Case():
     if (not case):
         return jsonify({"error": "invalid case ID"})
 
-    return jsonify("case": {case}), 200
+    return jsonify({"case": {case}}), 200
 
 
 # To select a bag inorder to Set a Target
