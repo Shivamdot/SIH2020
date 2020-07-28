@@ -65,11 +65,9 @@ def New_Case():
 # Get All Records
 @app.route('/cases', methods=['GET'])
 def Get_All_Cases():
-    cases = client.db.cases.find()
-    
     res = []
     
-    for case in cases:
+    for case in client.db.cases.find():
         data = {
             name: case['name'],
             caseID: case['_id']
