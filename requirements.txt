@@ -8,3 +8,4 @@ seaborn
 pillow
 sklearn
 flask_pymongo
+flask_cors

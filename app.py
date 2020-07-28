@@ -18,6 +18,7 @@ from flask import (
     send_from_directory, 
     abort
 )
+from flask_cors import CORS
 
 import process.init
 from process.find_target import findTarget
@@ -30,6 +31,7 @@ from process.get_target import getTarget
 
 # Initialize Flask application
 app = Flask(__name__, static_url_path='')
+CORS(app)
 # basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Initialize MongoDB Atlas URL
