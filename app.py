@@ -41,6 +41,7 @@ db = client["sih"]
 def home():
     return render_template("home.html")
 
+# Creates A New Case
 @app.route('/newcase', methods=['POST'])
 def New_Case():
     try:
@@ -60,6 +61,40 @@ def New_Case():
     rec = client.db.cases.insert_one(data)
     caseID = rec.inserted_id
     return jsonify({'name': name, 'caseID': str(caseID)}), 200
+
+# Get All Records
+@app.route('/cases', methods=['GET'])
+def Get_All_Cases():
+    cases = client.db.cases.find()
+    
+    res = []
+    
+    for case in cases:
+        data = {
+            name: case['name'],
+            caseID: case['_id']
+        }
+        res.append(data)
+    return jsonify({"cases": res}), 200
+
+# Get A Single Record
+@app.route('/case', methods=['GET'])
+def Get_A_Case():
+    try:
+        caseID = request.headers['caseID']
+    except:
+        return jsonify({"error": "'caseID' header file record is missing"})  
+
+    if(not ObjectId.is_valid(caseID)):
+        return jsonify({"error": "invalid case ID"})
+
+    case = client.db.cases.find_one({'_id': ObjectId(caseID)})
+
+    if (not case):
+        return jsonify({"error": "invalid case ID"})
+
+    return jsonify(case), 200
+
 
 # To select a bag inorder to Set a Target
 @app.route('/findtarget', methods=['POST'])
