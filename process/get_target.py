@@ -138,11 +138,11 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         vid_time = vid_time.split("-")
 
-        vid_year = vid_time[0]
-        vid_month = vid_time[1]
-        vid_day = vid_time[2]
-        vid_hour = vid_time[3]
-        vid_min = vid_time[4]
+        vid_year = int(vid_time[0])
+        vid_month = int(vid_time[1])
+        vid_day = int(vid_time[2])
+        vid_hour = int(vid_time[3])
+        vid_min = int(vid_time[4])
 
         record = {}
 
