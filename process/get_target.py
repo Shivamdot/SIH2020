@@ -220,19 +220,30 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         fps = 0.0
         count = 0
         frames_count = 0
+        frames_track = 0
+        skip_frame = 0
+        vid_fpm = 60*vid_fps
 
         while True:
             _, img = vid.read()
 
             if img is None:
-                print("Empty Frame")
                 count+=1
                 if count < 3:
                     continue
-                else: 
+                else:
+                    print("Processing of " + video + " has successfully completed...")
                     break
 
             frames_count += 1
+            frames_track += 1
+
+            if(frames_track == vid_fpm):
+                frames_track = 0
+
+            if(skip_frame > 0):
+                skip_frame -= 1
+                continue    
 
             img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
             img_in = tf.expand_dims(img_in, 0)
@@ -302,6 +313,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
                 # best_bag_box = bags[best_bag_index]['box']
                 # img = draw_output(img, best_bag_box)
                 curr_year, curr_month, curr_day, curr_hour, curr_min = currTime(int((frames_count/vid_fps)/60))
+                skip_frame = vid_fpm - frames_track
                 print(curr_year)
                 print(curr_month)
                 print(curr_day)
