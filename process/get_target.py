@@ -140,9 +140,74 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         vid_year = vid_time[0]
         vid_month = vid_time[1]
-        vid_date = vid_time[2]
+        vid_day = vid_time[2]
         vid_hour = vid_time[3]
         vid_min = vid_time[4]
+
+        record = {}
+
+        def isLeap(yr):
+            if (yr % 4) == 0: 
+                if (yr % 100) == 0: 
+                    if (yr % 400) == 0: 
+                        return True
+                    else: 
+                        return False
+                else: 
+                    return True
+            else: 
+                return False
+
+        def currTime(min_passed):
+            remainder = min_passed%60
+            hour_passed = int((min_passed-remainder)/60)
+            min_passed = remainder
+
+            remainder = hour_passed%24
+            day_passed = int((hour_passed-remainder)/24)
+            hour_passed = remainder
+
+            if(min_passed+vid_min >= 60):
+                cur_min = (min_passed+vid_min) - 60
+                hour_passed += 1
+            else:
+                cur_min = min_passed+vid_min
+
+            if(hour_passed+vid_hour >= 24):
+                cur_hour = (hour_passed+vid_hour) - 24
+                day_passed += 1
+            else:
+                cur_hour = hour_passed+vid_hour
+
+            cur_day = vid_day
+            cur_month = vid_month
+            cur_year = vid_year
+
+            while day_passed:
+                m = cur_month
+                if(m==1 or m==3 or m==5 or m==7 or m==8 or m==10 or m==12):
+                    m_days = 31
+                elif(m==4 or m==6 or m==9 or m==11):
+                    m_days = 30
+                elif(m==2):
+                    if(isLeap(cur_year)):
+                        m_days = 29
+                    else:
+                        m_days = 28
+                if(day_passed > m_days-cur_day)
+                    day_passed -= (m_days-cur_day)
+                    day_passed -= 1
+                    cur_day = 1
+                    cur_month += 1
+                else:
+                    cur_day += day_passed
+                    day_passed = 0  
+                if(cur_month >= 13) {
+                    cur_year += 1
+                    cur_month = 1
+                }      
+            return cur_year, cur_month, cur_day, cur_hour, cur_min
+
 
         vid = cv2.VideoCapture(vid_path)
 
@@ -169,79 +234,82 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
             frames_count += 1
 
-            # img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
-            # img_in = tf.expand_dims(img_in, 0)
-            # img_in = transform_images(img_in, size)
+            img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
+            img_in = tf.expand_dims(img_in, 0)
+            img_in = transform_images(img_in, size)
 
-            # t1 = time.time()
-            # boxes, scores, classes, nums = yolo.predict(img_in)
+            t1 = time.time()
+            boxes, scores, classes, nums = yolo.predict(img_in)
 
-            # bags = []
-            # for i in range(nums[0]):
-            #     temp_class = class_names[int(classes[0][i])]
-            #     if (temp_class=="suitcase" or temp_class=="handbag" or temp_class=="backpack"):
-            #         box = []
-            #         [box.append(float(i)) for i in np.array(boxes[0][i])]
-            #         bag = {
-            #             "confidence": float(np.array(scores[0][i])),
-            #             "box": box
-            #         }
-            #         bags.append(bag) 
+            bags = []
+            for i in range(nums[0]):
+                temp_class = class_names[int(classes[0][i])]
+                if (temp_class=="suitcase" or temp_class=="handbag" or temp_class=="backpack"):
+                    box = []
+                    [box.append(float(i)) for i in np.array(boxes[0][i])]
+                    bag = {
+                        "confidence": float(np.array(scores[0][i])),
+                        "box": box
+                    }
+                    bags.append(bag) 
             
-            # # img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
-            # h = img.shape[0]
-            # w = img.shape[1]
+            # img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
+            h = img.shape[0]
+            w = img.shape[1]
 
-            # if(not len(bags) > 0):
-            #     out.write(img)
-            #     continue
+            if(not len(bags) > 0):
+                continue
 
-            # bags_img = []
+            bags_img = []
 
-            # for bag in bags:
-            #     box = bag['box']
-            #     cropped = img[int(box[1]*h):int(box[3]*h), int(box[0]*w):int(box[2]*w)]
-            #     bags_img.append(cropped)    
+            for bag in bags:
+                box = bag['box']
+                cropped = img[int(box[1]*h):int(box[3]*h), int(box[0]*w):int(box[2]*w)]
+                bags_img.append(cropped)    
 
-            # sides = []
+            sides = []
 
-            # for s in target['sides']:
-            #     sides.append(s['side'])
+            for s in target['sides']:
+                sides.append(s['side'])
 
-            # bag_score = []   
+            bag_score = []   
 
-            # for bimg in bags_img:
-            #     img_orb = orb_feature(bimg, sides, caseID)
-            #     img_color = color(bimg, target['sides'])
+            for bimg in bags_img:
+                img_orb = orb_feature(bimg, sides, caseID)
+                img_color = color(bimg, target['sides'])
 
-            #     max_score = 0.0
+                max_score = 0.0
+                # Finding the side of a bag with best match
+                for j in range(len(sides)):
+                    v1 = (img_orb[j]['success']*30)/100
+                    v2 = (img_color[j]['success']*70)/100
+                    if((v1+v2) > max_score):
+                        max_score = v1+v2
+                if(max_score < 40):
+                    bag_score.append(-1)
+                else:       
+                    bag_score.append(max_score)
 
-            #     for j in range(len(sides)):
-            #         v1 = (img_orb[j]['success']*30)/100
-            #         v2 = (img_color[j]['success']*70)/100
-            #         if((v1+v2) > max_score):
-            #             max_score = v1+v2
-            #     if(max_score < 40):
-            #         bag_score.append(-1)
-            #     else:       
-            #         bag_score.append(max_score)
+            best_bag_index = 0
+            score = bag_score[0]
 
-            # best_bag_index = 0
-            # score = bag_score[0]
-
-            # for i in range(len(bag_score)):
-            #     if(bag_score[i] > score):
-            #         score = bag_score[i]
-            #         best_bag_index = i
+            for i in range(len(bag_score)):
+                if(bag_score[i] > score):
+                    score = bag_score[i]
+                    best_bag_index = i
         
-            # if(not score == -1):
-            #     best_bag_box = bags[best_bag_index]['box']
-            #     img = draw_output(img, best_bag_box)
+            if(not score == -1):  # got the bag with best match
+                # best_bag_box = bags[best_bag_index]['box']
+                # img = draw_output(img, best_bag_box)
+                curr_year, curr_month, curr_day, curr_hour, curr_min = currTime(int((frames_count/vid_fps)/60))
+                print(curr_year)
+                print(curr_month)
+                print(curr_day)
+                print(curr_hour)
+                print(curr_min)
 
 
             # fps  = ( fps + (1./(time.time()-t1)) ) / 2
 
             # print("FPS: " + str(fps))
             # out.write(img)
-
-        print(frames_count)    
