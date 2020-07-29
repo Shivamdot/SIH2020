@@ -166,87 +166,87 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         # count = 0
 
         # while True:
-            _, img = vid.read()
+        #     _, img = vid.read()
 
-            if img is None:
-                print("Empty Frame")
-                count+=1
-                if count < 3:
-                    continue
-                else: 
-                    break
+        #     if img is None:
+        #         print("Empty Frame")
+        #         count+=1
+        #         if count < 3:
+        #             continue
+        #         else: 
+        #             break
 
-            img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
-            img_in = tf.expand_dims(img_in, 0)
-            img_in = transform_images(img_in, size)
+        #     img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
+        #     img_in = tf.expand_dims(img_in, 0)
+        #     img_in = transform_images(img_in, size)
 
-            t1 = time.time()
-            boxes, scores, classes, nums = yolo.predict(img_in)
+        #     t1 = time.time()
+        #     boxes, scores, classes, nums = yolo.predict(img_in)
 
-            bags = []
-            for i in range(nums[0]):
-                temp_class = class_names[int(classes[0][i])]
-                if (temp_class=="suitcase" or temp_class=="handbag" or temp_class=="backpack"):
-                    box = []
-                    [box.append(float(i)) for i in np.array(boxes[0][i])]
-                    bag = {
-                        "confidence": float(np.array(scores[0][i])),
-                        "box": box
-                    }
-                    bags.append(bag) 
+        #     bags = []
+        #     for i in range(nums[0]):
+        #         temp_class = class_names[int(classes[0][i])]
+        #         if (temp_class=="suitcase" or temp_class=="handbag" or temp_class=="backpack"):
+        #             box = []
+        #             [box.append(float(i)) for i in np.array(boxes[0][i])]
+        #             bag = {
+        #                 "confidence": float(np.array(scores[0][i])),
+        #                 "box": box
+        #             }
+        #             bags.append(bag) 
             
-            # img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
-            h = img.shape[0]
-            w = img.shape[1]
+        #     # img = cv2.cvtColor(raw_img.numpy(), cv2.COLOR_RGB2BGR)
+        #     h = img.shape[0]
+        #     w = img.shape[1]
 
-            if(not len(bags) > 0):
-                out.write(img)
-                continue
+        #     if(not len(bags) > 0):
+        #         out.write(img)
+        #         continue
 
-            bags_img = []
+        #     bags_img = []
 
-            for bag in bags:
-                box = bag['box']
-                cropped = img[int(box[1]*h):int(box[3]*h), int(box[0]*w):int(box[2]*w)]
-                bags_img.append(cropped)    
+        #     for bag in bags:
+        #         box = bag['box']
+        #         cropped = img[int(box[1]*h):int(box[3]*h), int(box[0]*w):int(box[2]*w)]
+        #         bags_img.append(cropped)    
 
-            sides = []
+        #     sides = []
 
-            for s in target['sides']:
-                sides.append(s['side'])
+        #     for s in target['sides']:
+        #         sides.append(s['side'])
 
-            bag_score = []   
+        #     bag_score = []   
 
-            for bimg in bags_img:
-                img_orb = orb_feature(bimg, sides, caseID)
-                img_color = color(bimg, target['sides'])
+        #     for bimg in bags_img:
+        #         img_orb = orb_feature(bimg, sides, caseID)
+        #         img_color = color(bimg, target['sides'])
 
-                max_score = 0.0
+        #         max_score = 0.0
 
-                for j in range(len(sides)):
-                    v1 = (img_orb[j]['success']*30)/100
-                    v2 = (img_color[j]['success']*70)/100
-                    if((v1+v2) > max_score):
-                        max_score = v1+v2
-                if(max_score < 40):
-                    bag_score.append(-1)
-                else:       
-                    bag_score.append(max_score)
+        #         for j in range(len(sides)):
+        #             v1 = (img_orb[j]['success']*30)/100
+        #             v2 = (img_color[j]['success']*70)/100
+        #             if((v1+v2) > max_score):
+        #                 max_score = v1+v2
+        #         if(max_score < 40):
+        #             bag_score.append(-1)
+        #         else:       
+        #             bag_score.append(max_score)
 
-            best_bag_index = 0
-            score = bag_score[0]
+        #     best_bag_index = 0
+        #     score = bag_score[0]
 
-            for i in range(len(bag_score)):
-                if(bag_score[i] > score):
-                    score = bag_score[i]
-                    best_bag_index = i
+        #     for i in range(len(bag_score)):
+        #         if(bag_score[i] > score):
+        #             score = bag_score[i]
+        #             best_bag_index = i
         
-            if(not score == -1):
-                best_bag_box = bags[best_bag_index]['box']
-                img = draw_output(img, best_bag_box)
+        #     if(not score == -1):
+        #         best_bag_box = bags[best_bag_index]['box']
+        #         img = draw_output(img, best_bag_box)
 
 
-            fps  = ( fps + (1./(time.time()-t1)) ) / 2
+        #     fps  = ( fps + (1./(time.time()-t1)) ) / 2
 
-            print("FPS: " + str(fps))
-            out.write(img)
+        #     print("FPS: " + str(fps))
+        #     out.write(img)
