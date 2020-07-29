@@ -3,6 +3,7 @@ import cv2
 import time
 import json
 import threading
+from os import walk
 from PIL import Image
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
@@ -58,7 +59,11 @@ def New_Case():
             "status": 0,
             "sides": None
         },
-        "analysis": None
+        "analysis": {
+            "status": -1,
+            "record": None,
+            "videoID": None
+        }
     }
     rec = client.db.cases.insert_one(data)
     caseID = rec.inserted_id
@@ -385,7 +390,7 @@ def Test_Target():
 
     return jsonify({'link': link})
 
-
+# Get Analysis from the videos
 @app.route('/gettarget', methods=['POST'])
 def Get_Target():
     try:
@@ -404,30 +409,27 @@ def Get_Target():
     if(not case['target']['status']):
         return jsonify({"error": "first please set the target properly to perform further detections"})
 
-    # try:
-    #     video = request.files['video']
-    # except:
-    #     return jsonify({"error": "please provide the valid parameter (video)"})
+    videos_path = "./static/videos/{}".format(caseID)
 
-    # store the video in its caseID folder
-    if(not os.path.isdir("./static/videos/{}".format(caseID))):
-        os.mkdir("./static/videos/{}".format(caseID))
+    # Check that the video folder exist or not
+    if(not os.path.isdir(videos_path)):
+        return jsonify({"error": "no videos found to analyze"})
+        # os.mkdir("./static/videos/{}".format(caseID))
 
-    # filename = video.filename
-    # cur_time = str(int(time.time()))
-    # vid_name = "{}-{}".format(cur_time, filename)
+    videos_filename = []
+    for (dirpath, dirnames, filenames) in walk(videos_path):
+        videos_filename.append(filenames)
+        break
 
-    # vid_path = "./static/videos/{}/{}".format(caseID,vid_name)
-    # video.save(vid_path)
+    # vid_path = "./static/videos/train_Trim.mp4"
 
-    vid_path = "./static/videos/train_Trim.mp4"
+    # target = case['target']
 
-    target = case['target']
-
-    # getTarget(vid_path, target, caseID)
-
-    t = threading.Thread(target=getTarget, args=[vid_path, target, caseID])
-    t.start()
+    # t = threading.Thread(target=getTarget, args=[vid_path, target, caseID])
+    # t.start()
+    
+    print(videos_path)
+    print(videos_filename)
 
     link = "http://52.146.37.96/videos/{}/output.avi".format(caseID)
 
