@@ -421,19 +421,12 @@ def Get_Target():
         videos_filename.extend(filenames)
         break
 
-    # vid_path = "./static/videos/train_Trim.mp4"
+    target = case['target']
 
-    # target = case['target']
-
-    # t = threading.Thread(target=getTarget, args=[vid_path, target, caseID])
-    # t.start()
+    t = threading.Thread(target=getTarget, args=[videos_path, videos_filename, target, caseID, client])
+    t.start()
     
-    print(videos_path)
-    print(videos_filename)
-
-    link = "http://52.146.37.96/videos/{}/output.avi".format(caseID)
-
-    return jsonify({"message": "started the process", "link": link}), 200
+    return jsonify({"message": "started the process"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
