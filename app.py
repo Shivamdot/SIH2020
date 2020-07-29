@@ -418,7 +418,7 @@ def Get_Target():
 
     videos_filename = []
     for (dirpath, dirnames, filenames) in walk(videos_path):
-        videos_filename.append(filenames)
+        videos_filename.extend(filenames)
         break
 
     # vid_path = "./static/videos/train_Trim.mp4"
