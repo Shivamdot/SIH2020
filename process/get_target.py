@@ -194,7 +194,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
                         m_days = 29
                     else:
                         m_days = 28
-                if(day_passed > m_days-cur_day)
+                if(day_passed > m_days-cur_day):
                     day_passed -= (m_days-cur_day)
                     day_passed -= 1
                     cur_day = 1
@@ -202,10 +202,10 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
                 else:
                     cur_day += day_passed
                     day_passed = 0  
-                if(cur_month >= 13) {
+                if(cur_month >= 13):
                     cur_year += 1
                     cur_month = 1
-                }      
+
             return cur_year, cur_month, cur_day, cur_hour, cur_min
 
 
