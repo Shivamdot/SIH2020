@@ -127,7 +127,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
     # output = "./static/videos/{}/output.avi".format(caseID)
     status = 0
     record = []
-    videoID = {}
+    videoID = []
     videos_count = 0
     total_videos = len(videos_filename)
 
@@ -137,7 +137,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         vid_info = video.split(".")[0].split("_")
 
-        vid_id = vid_info[0]
+        vid_id = int(vid_info[0])
         vid_time = vid_info[1]
         vid_location = vid_info[2]
 
@@ -149,7 +149,25 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         vid_hour = int(vid_time[3])
         vid_min = int(vid_time[4])
 
-        videoID[vid_id] = video
+        vid_location = vid_location.split("-")
+
+        vid_lat_in = vid_location[0]
+        vid_long_in = vid_location[1]
+
+        vid_lat_in = vid_lat_in.split("=")
+        vid_long_in = vid_long_in.split("=")
+
+        vid_lat = float(vid_lat_in[0] + "." + vid_lat_in[1])
+        vid_long = float(vid_long_in[0] + "." + vid_long_in[1])
+
+        videoID_rec = {
+            "id": vid_id,
+            "filename": video,
+            "lat": vid_lat,
+            "long": vid_long
+        }
+        
+        videoID.append(videoID_rec)
 
         def isLeap(yr):
             if (yr % 4) == 0: 
@@ -436,5 +454,10 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         status = int((videos_count/total_videos)*100)
         print("status : " + str(status) + "%")
 
-    print(record)       
-    print(videoID)       
+    analysis = {
+        "status": -1,
+        "record": record,
+        "videoID": videoID
+    }
+
+    print(analysis)
