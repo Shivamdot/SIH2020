@@ -453,6 +453,14 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         videos_count += 1
         status = int((videos_count/total_videos)*100)
+
+        status_update = {
+            "analysis": {
+                "status": status
+            }
+        }
+
+        client.db.cases.update_one({'_id': ObjectId(caseID)}, {'$set': status_update})
         print("status : " + str(status) + "%")
 
     update = {
