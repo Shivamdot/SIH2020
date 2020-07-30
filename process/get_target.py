@@ -125,8 +125,11 @@ def color(img, sides):
 def getTarget(videos_path, videos_filename, target, caseID, client):
 
     # output = "./static/videos/{}/output.avi".format(caseID)
-
+    status = 0
     record = []
+    videoID = {}
+    videos_count = 0
+    total_videos = len(videos_filename)
 
     for video in videos_filename:
 
@@ -145,6 +148,8 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         vid_day = int(vid_time[2])
         vid_hour = int(vid_time[3])
         vid_min = int(vid_time[4])
+
+        videoID[vid_id] = video
 
         def isLeap(yr):
             if (yr % 4) == 0: 
@@ -427,4 +432,9 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
             # print("FPS: " + str(fps))
             # out.write(img)
 
-    print(record)        
+        videos_count += 1
+        status = int((videos_count/total_videos)*100)
+        print("status : " + status + "%")
+
+    print(record)       
+    print(videoID)       
