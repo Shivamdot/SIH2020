@@ -126,6 +126,8 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
     # output = "./static/videos/{}/output.avi".format(caseID)
 
+    record = []
+
     for video in videos_filename:
 
         vid_path = videos_path + "/" + video
@@ -143,8 +145,6 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         vid_day = int(vid_time[2])
         vid_hour = int(vid_time[3])
         vid_min = int(vid_time[4])
-
-        record = {}
 
         def isLeap(yr):
             if (yr % 4) == 0: 
@@ -312,16 +312,119 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
             if(not score == -1):  # got the bag with best match
                 # best_bag_box = bags[best_bag_index]['box']
                 # img = draw_output(img, best_bag_box)
-                curr_year, curr_month, curr_day, curr_hour, curr_min = currTime(int((frames_count/vid_fps)/60))
                 skip_frame = vid_fpm - frames_track
-                print(curr_year)
-                print(curr_month)
-                print(curr_day)
-                print(curr_hour)
-                print(curr_min)
+                curr_year, curr_month, curr_day, curr_hour, curr_min = currTime(int((frames_count/vid_fps)/60))
 
+                found = 0
+                year_index = -1
+                for i in range(len(record)):
+                    if(record[i]['year'] == curr_year):
+                        found = 1
+                        year_index = i
+                        break
+
+                if(not found):
+                    rec = {
+                        "year": curr_year,
+                        "months": [{
+                            "month": curr_month,
+                            "days": [{
+                                "day": curr_day,
+                                "hours": [{
+                                    "hour": curr_hour,
+                                    "minutes": [{
+                                        "minute": curr_min,
+                                        "vid": [vid_id]
+                                    }]
+                                }]
+                            }]
+                        }]
+                    }
+                    record.append(rec)
+                else:
+                    found = 0
+                    months = record[year_index]['months']
+                    month_index = -1
+                    for i in range(len(months)):
+                        if(months[i]['month'] == curr_month):
+                            found = 1
+                            month_index = i
+                            break
+                    if(not found):
+                        rec = {
+                            "month": curr_month,
+                            "days": [{
+                                "day": curr_day,
+                                "hours": [{
+                                    "hour": curr_hour,
+                                    "minutes": [{
+                                        "minute": curr_min,
+                                        "vid": [vid_id]
+                                    }]
+                                }]
+                            }]
+                        } 
+                        record[year_index]['months'].append(rec)
+                    else:
+                        found = 0
+                        days = record[year_index]['months'][month_index]['days']
+                        day_index = -1
+                        for i in range(len(days)):
+                            if(days[i]['day'] == curr_day):
+                                found = 1
+                                day_index = i
+                                break
+                        if(not found):
+                            rec = {
+                                "day": curr_day,
+                                "hours": [{
+                                    "hour": curr_hour,
+                                    "minutes": [{
+                                        "minute": curr_min,
+                                        "vid": [vid_id]
+                                    }]
+                                }]
+                            }  
+                            record[year_index]['months'][month_index]['days'].append(rec)
+                        else:
+                            found = 0
+                            hours = record[year_index]['months'][month_index]['days'][day_index]['hours']
+                            hour_index = -1
+                            for i in range(len(hours)):
+                                if(hours[i]['hour'] == curr_hour):
+                                    found = 1
+                                    hour_index = i 
+                                    break
+                            if(not found):
+                                rec = {
+                                    "hour": curr_hour,
+                                    "minutes": [{
+                                        "minute": curr_min,
+                                        "vid": [vid_id]
+                                    }]
+                                }
+                                record[year_index]['months'][month_index]['days'][day_index]['hours'].append(rec)
+                            else:
+                                found = 0
+                                minutes = record[year_index]['months'][month_index]['days'][day_index]['hours'][hour_index]['minutes']
+                                minute_index = -1
+                                for i in range(len(minutes)):
+                                    if(minutes[i]['minute'] == curr_min):
+                                        found = 1
+                                        minute_index = i 
+                                        break
+                                if(not found):
+                                    rec = {
+                                        "minute": curr_min,
+                                        "vid": [vid_id]
+                                    }
+                                    record[year_index]['months'][month_index]['days'][day_index]['hours'][hour_index]['minutes'].append(rec)
+                                else:
+                                    record[year_index]['months'][month_index]['days'][day_index]['hours'][hour_index]['minutes'][minute_index]['vid'].append(vid_id)    
 
             # fps  = ( fps + (1./(time.time()-t1)) ) / 2
 
             # print("FPS: " + str(fps))
             # out.write(img)
+
+    print(record)        
