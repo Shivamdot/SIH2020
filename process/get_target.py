@@ -434,7 +434,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         videos_count += 1
         status = int((videos_count/total_videos)*100)
-        print("status : " + status + "%")
+        print("status : " + str(status) + "%")
 
     print(record)       
     print(videoID)       
