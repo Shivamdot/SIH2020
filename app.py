@@ -426,7 +426,7 @@ def Get_Target():
     t = threading.Thread(target=getTarget, args=[videos_path, videos_filename, target, caseID, client])
     t.start()
     
-    return jsonify({"message": "started the process"}), 200
+    return jsonify({"success": "started the process"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
