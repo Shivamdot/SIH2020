@@ -5,6 +5,7 @@ import tensorflow as tf
 from process.yolov3_tf2.models import YoloV3
 from process.yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
 from process.yolov3_tf2.utils import draw_outputs, draw_output
+from bson.objectid import ObjectId
 import os
 
 from sklearn.cluster import KMeans
@@ -454,10 +455,12 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         status = int((videos_count/total_videos)*100)
         print("status : " + str(status) + "%")
 
-    analysis = {
-        "status": -1,
-        "record": record,
-        "videoID": videoID
+    update = {
+        "analysis": {
+            "status": -1,
+            "record": record,
+            "videoID": videoID
+        }
     }
 
-    print(analysis)
+    client.db.cases.update_one({'_id': ObjectId(caseID)}, {'$set': update})
