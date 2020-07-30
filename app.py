@@ -409,6 +409,9 @@ def Get_Target():
     if(not case['target']['status']):
         return jsonify({"error": "first please set the target properly to perform further detections"})
 
+    if(case['analysis']['status'] != -1):
+        return jsonify({"error": "analysis is already in progress"})
+
     videos_path = "./static/videos/{}".format(caseID)
 
     # Check that the video folder exist or not
@@ -427,6 +430,27 @@ def Get_Target():
     t.start()
     
     return jsonify({"success": "started the process"}), 200
+
+# Get Analysis Status
+@app.route('/getstatus', methods=['GET'])
+def Get_Status():
+    try:
+        caseID = request.headers['caseID']
+    except:
+        return jsonify({"error": "'caseID' header file record is missing"})  
+
+    if(not ObjectId.is_valid(caseID)):
+        return jsonify({"error": "invalid case ID"})
+
+    case = client.db.cases.find_one({'_id': ObjectId(caseID)})
+
+    if (not case):
+        return jsonify({"error": "invalid case ID"})
+
+    status = case['analysis']['status'];
+
+    return jsonify({"status": status}), 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
