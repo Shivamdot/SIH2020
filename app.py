@@ -431,12 +431,10 @@ def Get_Target():
     if(len(videos_filename) <= 0):
         return jsonify({"error": "no videos found to analyze"})
 
-    print(videos_filename)
-    print(videos_path)
-    # target = case['target']
+    target = case['target']
 
-    # t = threading.Thread(target=getTarget, args=[videos_path, videos_filename, target, caseID, client])
-    # t.start()
+    t = threading.Thread(target=getTarget, args=[videos_path, videos_filename, target, caseID, client])
+    t.start()
     
     return jsonify({"success": "started the process"}), 200
 
