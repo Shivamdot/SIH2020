@@ -234,7 +234,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
         vid = cv2.VideoCapture(vid_path)
 
-        output = "./static/videos/{}/output/{}.avi".format(caseID,video.split("."))
+        output = "./static/videos/{}/output/{}.avi".format(caseID,video.split(".")[0])
 
         vid_fps = int(vid.get(cv2.CAP_PROP_FPS))
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
