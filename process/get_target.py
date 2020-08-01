@@ -240,7 +240,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         codec = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter(output, codec, fps, (width, height))
+        out = cv2.VideoWriter(output, codec, vid_fps, (width, height))
         
         fps = 0.0
         count = 0
