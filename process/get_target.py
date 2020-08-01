@@ -337,7 +337,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
             if(not score == -1):  # got the bag with best match
                 best_bag_box = bags[best_bag_index]['box']
                 img = draw_output(img, best_bag_box)
-                skip_frame = vid_fpm - frames_track
+                # skip_frame = vid_fpm - frames_track
                 curr_year, curr_month, curr_day, curr_hour, curr_min = currTime(int((frames_count/vid_fps)/60))
 
                 found = 0
