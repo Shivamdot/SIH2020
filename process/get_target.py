@@ -136,7 +136,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
         vid_path = videos_path + "/" + video
 
         vid_info = video.split(".")[0].split("_")
-
+        print(vid_id)
         vid_id = int(vid_info[0])
         vid_time = vid_info[1]
         vid_location = vid_info[2]
