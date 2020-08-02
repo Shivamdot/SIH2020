@@ -1,13 +1,13 @@
 import tensorflow as tf
 from process.yolov3_tf2.models import YoloV3
 
-# classes_path = './process/data/labels/coco.names'
-# weights_path = './process/weights/yolov3.tf'
-# num_classes = 80
+classes_path = './process/data/labels/coco.names'
+weights_path = './process/weights/yolov3.tf'
+num_classes = 80
 
-classes_path = './process/data/labels/cocoCustom.names'
-weights_path = './process/weights/yolov3_custom_3000.tf'
-num_classes = 1
+# classes_path = './process/data/labels/cocoCustom.names'
+# weights_path = './process/weights/yolov3_custom_3000.tf'
+# num_classes = 1
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
