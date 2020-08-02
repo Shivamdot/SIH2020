@@ -361,7 +361,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
                 year_index = -1
 
                 for i in range(len(record)):
-                    if(record[i][vid] == vid_id):
+                    if(record[i]["vid"] == vid_id):
                         found = 1
                         year_index = i
                         break
