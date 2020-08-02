@@ -368,7 +368,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
 
                 if(not found):
                     rec = {
-                        "vid": vid_id
+                        "vid": vid_id,
                         "detections": [
                             {
                                 "year": curr_year,
