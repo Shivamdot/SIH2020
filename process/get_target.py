@@ -175,7 +175,7 @@ def getTarget(videos_path, videos_filename, target, caseID, client):
             "id": vid_id,
             "filename": video,
             "lat": vid_lat,
-            "long": vid_long
+            "long": vid_long,
             "link": link
         }
         
